@@ -1,0 +1,82 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+  id "com.github.hierynomus.license" version "0.14.0"
+  id "com.xebialabs.xldp" version "1.0.5"
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+version = '1.0.0'
+def apiVersion = '2017.4.0'
+def artifactId = "xld-conjur-host-plugin"
+
+processResources {
+  filter ReplaceTokens, tokens: [
+    'project.version': project.version.toString(),
+    'artifactId': artifactId
+  ]
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven {
+    url 'https://dist.xebialabs.com/public/maven2'
+  }
+}
+
+configurations {
+    provided
+    compile.extendsFrom provided
+}
+
+dependencies {
+  compile "com.xebialabs.deployit:udm-plugin-api:$apiVersion"
+  compile "com.xebialabs.deployit:engine-spi:$apiVersion"
+  compile group: 'com.google.guava', name: 'guava', version: '19.0'
+  compile group: 'org.antlr', name: 'ST4', version: '4.0.8'
+  compile group: 'net.conjur.api', name: 'conjur-api', version: '1.2'
+  compile zipTree("$xlDeployHome/plugins/generic-plugin-7.5.0.xldp")
+  compile zipTree("$xlDeployHome/plugins/remoting-plugin-7.5.0.xldp")
+  compile zipTree("$xlDeployHome/plugins/base-plugin-7.5.0.xldp")
+
+  distBundle group: 'org.antlr', name: 'ST4', version: '4.0.8'
+  distBundle group: 'net.conjur.api', name: 'conjur-api', version: '1.2'
+}
+
+// dependencies {
+//   provided "com.xebialabs.deployit:udm-plugin-api:$apiVersion"
+//   provided "com.xebialabs.deployit:engine-spi:$apiVersion"
+//   compile group: 'com.google.guava', name: 'guava', version: '19.0'
+//   compile group: 'org.antlr', name: 'ST4', version: '4.0.8'
+//   compile group: 'net.conjur.api', name: 'conjur-api', version: '1.2'
+//   provided zipTree("$xlDeployHome/plugins/generic-plugin-7.5.0.xldp")
+//   provided zipTree("$xlDeployHome/plugins/remoting-plugin-7.5.0.xldp")
+//   provided zipTree("$xlDeployHome/plugins/base-plugin-7.5.0.xldp")
+// }
+
+// jar {
+//     dependsOn configurations.runtime
+//     from {
+//         (configurations.runtime - configurations.provided).collect {
+//             it.isDirectory() ? it : zipTree(it)
+//         }
+//     } {
+//         exclude "META-INF/*.SF"
+//         exclude "META-INF/*.DSA"
+//         exclude "META-INF/*.RSA"
+//     }
+// }
+
+license {
+  header rootProject.file('License.md')
+  strictCheck false
+  ext.year = Calendar.getInstance().get(Calendar.YEAR)
+  ext.name = 'XEBIALABS'
+}
+
+

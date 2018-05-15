@@ -1,0 +1,32 @@
+- !group &ops ops
+- !group &managers managers
+
+- !host &localvm
+  id: local-vm
+  owner: *ops
+
+- !variable &hostusername
+  id: host/local-vm/username
+  owner: *ops
+  annotations:
+    app: SimpleApp
+
+- !variable &hostpassword
+  id: host/local-vm/password
+  owner: *ops
+  annotations:
+    app: SimpleApp
+
+- !permit
+  role: *managers
+  privileges: [ read, execute, update ]
+  resource: 
+    - *hostusername
+    - *hostpassword
+
+- !permit
+  role: *localvm
+  privileges: [ execute ]
+  resource: 
+    - *hostusername
+    - *hostpassword

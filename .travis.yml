@@ -1,0 +1,20 @@
+sudo: required
+language: java
+install: true
+script: "./gradlew compileDocker"
+services:
+- docker
+notifications:
+  hipchat:
+    rooms:
+      secure: bgc0fi63YRtkbpXT4wEkFuid10kkc59KJrBw2x6CZ7jVz4dRkKv7pDzcFdyWJcqy0+ud8hDTtEJy89pCCnjMsW0s1HAmcT28cyj+Np2xlDLuX6nYs/Hnbu9c0uOH+khc12WrHX2u6VsW+tnsdXU727phmj9SpGl1nwZ+T4+N+bbsZJyFhTPSuPPMjz7pwQN/F8Ad2/1LMHI3gUGSAyTKBPEFnB5aV5eiUc9Z2970AAIDoSUaR6niKGoQoHydVM68rFi3qvYm3/WaoBM6E8zI6+5uiVplNgvMLeEbeQBzABYox1LnW2XkN1VHktVz23Yt1CvtA0iVkJUmnjgSLFL3B5DZ8QLUT8S0qk8j5rrd9rfgZcuZ0SGLfjkfZ1P2gePLl28WZaoEG3h9QNG1TTjvUziqoWrt9FFy0t54e/EYeY7iheCWcUJVoAQRulSxbQFboUzHX7yA5GYcktQXHa9gP8xAPSrMzm54hFiRJwaftz+O372ONvsTFqEhr4BcIFltv/UHsDnM+hErvjBiHVcQVZuGdwbIZS/3AewFGYrQ6qsXdQEOEe94aBzBYsVX+C2IGZM09G1OK4v7dFB/62Uleg7ZeWrmwejDB/1QLjV7rzr/txpVBjXzNLkAv+72927l9j0Nn3Lv2aSweVurEZbN+c6SdUPRg4jWY+sFlUS1yhM=
+deploy:
+  provider: releases
+  api_key:
+    secure: dfSNUbwo4/PCh51qB+DTVcptiYD2ARatO+BSxrlW5z9oKq3bdvZhY66I1OQ387UNcgTgzFC6f5PUKYUu5npRxqk2bSybt0o+UmISQ6mBnVH8noB5ZTBWnB63X3+BBI2q83jXwjpfN6Orw+tjxh1hKoNx2dXNstIn0Mn1CBJXOI7WjPdmO4K0mc5bxVcLytwcXRt6V82jYRJG2vzrbBJs4uCU8M53duXPkU4DIbF6tr8r/E4Uus8+uY1iAWm+ipCcQJ4KsiRrozmd09JJ5ubOnN7d+wP9aJwK4NJkkFBnNqiuYY3Eg6nkIkrMx9NNB25f3558Egw9Kvwr6XNMHNy4OQXjCiX4Zbz0VcubLxBYSMHL+ic0xXH4LUpeTPFaoiQZdqd086ymr83XlOPprKCICFnEtKcGxVkhQzdGXscuegRErs7PmIYL47cvDkGm5T7SHndYucpNyuws7PwT/o2Iay6BQMGjQdSn4HmyWDMk/G7SjFg4QN5Wm1OBoFzl5bvFEnSwMTDvDSuYXV4Fbrnbr+t/QSoVQmSll+f+NGzBVHV0NZ3+xY9I0HRtsG69hH/lhy1ylFU1cG9fePffk2BvDSfOSAjGchIN0xmow/BbyLKN0kIefiohqu3KFpqzeWYBHCc5vhtgdr3Lb5MtzmGwc3EpaIx22jTf9v0OnP/KREI=
+  file: "./build/distributions/xld-personal-credentials-plugin-5.0.1.xldp"
+  skip_cleanup: true
+  on:
+    all_branches: true
+    tags: true
+    repo: xebialabs-community/xld-personal-credentials-plugin

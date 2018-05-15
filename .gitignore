@@ -1,0 +1,10 @@
+.DS_Store
+.gradle
+.idea
+.project
+.pydevproject
+.settings
+pom.xml
+build
+supervisord.*
+xld-conjur-host-plugin.iml
