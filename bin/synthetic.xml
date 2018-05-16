@@ -15,13 +15,13 @@
   xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
 
     <type-modification type="udm.Environment">
-        <property name="overrideHostCredentials" kind="boolean" category="Conjur Credentials" required="false" default="false"/>
-        <property name="credentialsType"         kind="enum"    category="Conjur Credentials" required="false" default="CT_USERNAME" enum-class="ext.deployit.community.plugin.conjur.ci.CredentialsType"/>
-        <property name="conjurKeyTemplate"       kind="string"  category="Conjur Credentials" required="false" description="Key Template" default="host/${env.name}/${host.name}"/>
-        <property name="conjurURL"               kind="string"  category="Conjur Credentials" required="false" description="Conjur Server URL" />
-        <property name="conjurAccount"           kind="string"  category="Conjur Credentials" required="false" description="Account" />
-        <property name="conjurUsername"          kind="string"  category="Conjur Credentials" required="false" description="Username" />
-        <property name="conjurPassword"          kind="string"  category="Conjur Credentials" required="false" description="Passwowrd" password="true"/>
-        <property name="checkConnection"         kind="boolean" category="Conjur Credentials" required="false" default="true" />
+        <property name="overrideHostCredentials" kind="boolean" category="Conjur" required="false" default="false"/>
+        <property name="credentialsType"         kind="enum"    category="Conjur" required="false" default="CT_USERNAME"     enum-class="ext.deployit.community.plugin.conjur.ci.CredentialsType"/>
+        <property name="conjurKeyTemplate"       kind="string"  category="Conjur" required="false" label="Key Template"      description="Template used to define the secret's key." default="host/${env.name}/${host.name}"/>
+        <property name="conjurURL"               kind="string"  category="Conjur" required="false" label="Conjur Server URL" description="Full URL, including http or https, to the Conjur server."/>
+        <property name="conjurAccount"           kind="string"  category="Conjur" required="false" label="Account"           description="ID of the Conjur account holding the secrets."/>
+        <property name="conjurUsername"          kind="string"  category="Conjur" required="false" label="Username"          description="User name used to access the secrets."/>
+        <property name="conjurPassword"          kind="string"  category="Conjur" required="false" label="Passwowrd"         description="Password for the above user." password="true"/>
+        <property name="checkConnection"         kind="boolean" category="Conjur" required="false" default="true" />
     </type-modification>
   </synthetic>

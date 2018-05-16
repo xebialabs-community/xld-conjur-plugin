@@ -15,9 +15,13 @@ import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Function;
@@ -32,13 +36,14 @@ import com.xebialabs.deployit.plugin.api.udm.ConfigurationItem;
 import com.xebialabs.deployit.plugin.api.udm.Deployed;
 import com.xebialabs.deployit.plugin.api.udm.DeployedApplication;
 import com.xebialabs.deployit.plugin.api.udm.Environment;
+import com.xebialabs.deployit.plugin.api.udm.Version;
 import com.xebialabs.deployit.plugin.overthere.Host;
 import com.xebialabs.deployit.plugin.overthere.HostContainer;
 import com.xebialabs.deployit.plugin.overthere.step.CheckCommandExecutionStep;
 
+import org.apache.commons.text.StringSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.stringtemplate.v4.ST;
 
 import ext.deployit.community.plugin.conjur.ci.CredentialsType;
 import net.conjur.api.Conjur;
@@ -64,7 +69,6 @@ public class IdentityContributor
         // create conjur client
         System.setProperty(CONJUR_URL, environment.getProperty("conjurURL"));
         System.setProperty(CONJUR_ACCOUNT, environment.getProperty("conjurAccount"));
-
         String username = environment.getProperty("conjurUsername");
         String password = environment.getProperty("conjurPassword");
 
@@ -75,7 +79,7 @@ public class IdentityContributor
                 .addAll(filter(transform(deltas, DEPLOYED_TO_HOST), notNull()))
                 .addAll(filter(transform(deltas, PREVIOUS_TO_HOST), notNull())).build();
 
-        logger.debug("Hosts {}", hosts);
+        logger.info("Hosts {}", hosts);
 
         CredentialsType credentialType = environment.<CredentialsType>getProperty("credentialsType");
         logger.debug("CredentialsType {}", credentialType);
@@ -123,6 +127,7 @@ public class IdentityContributor
             public List<Step> apply(final Host host) {
                 String keyroot = formKeyRoot(host, environment, deployedApplication);
 
+                logger.info(String.format("Setting credentials for host '%s'", host.getId()));
                 host.setProperty("username", conjur.variables().retrieveSecret(String.format("%s/%s", keyroot, "username")));
                 host.setProperty("password", conjur.variables().retrieveSecret(String.format("%s/%s", keyroot, "password")));
         
@@ -140,24 +145,27 @@ public class IdentityContributor
 
     protected static String formKeyRoot(Host host, final Environment environment, final DeployedApplication deployedApplication)
     {
-        String keytmpl = environment.getProperty("conjurKeyTemplate");
-        ST stkey = new ST(keytmpl);
+        Map<String, String> valuesMap = new HashMap<String, String>();
 
-        String appname = deployedApplication.getProperty("application");
+        String appname = deployedApplication.getVersion().getApplication().getName();
         if ( appname.startsWith("Applications") )
         {
             appname = appname.substring("Applications/".length());
         }
 
-        stkey.add("app.name", appname);
-        stkey.add("env.name", environment.getName());
-        stkey.add("host.name", host.getName());
-        stkey.add("host.address", host.getProperty("address"));
-        stkey.add("host.username", host.getProperty("username"));
+        valuesMap.put("app.name", appname);
+        valuesMap.put("env.name", environment.getName());
+        valuesMap.put("host.name", host.getName());
+        valuesMap.put("host.address", host.getProperty("address"));
+        valuesMap.put("host.username", host.getProperty("username"));
 
-        String root = stkey.render();
-        logger.debug("root: %s", root);
-        return root;
+        StringSubstitutor sub = new StringSubstitutor(valuesMap);
+
+        String keyTemplate = environment.getProperty("conjurKeyTemplate");
+        String keyRoot = sub.replace(keyTemplate);
+
+        logger.info(String.format("key root: %s", keyRoot));
+        return keyRoot;
     }
 
     private static final Function<Delta, Host> DEPLOYED_TO_HOST = new ToHost() {
@@ -205,4 +213,67 @@ public class IdentityContributor
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(IdentityContributor.class);
+
+    public static String dump(Object o) {
+        StringBuffer buffer = new StringBuffer();
+        Class oClass = o.getClass();
+         if (oClass.isArray()) {
+             buffer.append("Array: ");
+            buffer.append("[");
+            for (int i = 0; i < Array.getLength(o); i++) {
+                Object value = Array.get(o, i);
+                if (value.getClass().isPrimitive() ||
+                        value.getClass() == java.lang.Long.class ||
+                        value.getClass() == java.lang.Integer.class ||
+                        value.getClass() == java.lang.Boolean.class ||
+                        value.getClass() == java.lang.String.class ||
+                        value.getClass() == java.lang.Double.class ||
+                        value.getClass() == java.lang.Short.class ||
+                        value.getClass() == java.lang.Byte.class
+                        ) {
+                    buffer.append(value);
+                    if(i != (Array.getLength(o)-1)) buffer.append(",");
+                } else {
+                    buffer.append(dump(value));
+                 }
+            }
+            buffer.append("]\n");
+        } else {
+             buffer.append("Class: " + oClass.getName());
+             buffer.append("{\n");
+            while (oClass != null) {
+                Field[] fields = oClass.getDeclaredFields();
+                for (int i = 0; i < fields.length; i++) {
+                    fields[i].setAccessible(true);
+                    buffer.append(fields[i].getName());
+                    buffer.append("=");
+                    try {
+                        Object value = fields[i].get(o);
+                        if (value != null) {
+                            // if (value.getClass().isPrimitive() ||
+                            //         value.getClass() == java.lang.Long.class ||
+                            //         value.getClass() == java.lang.String.class ||
+                            //         value.getClass() == java.lang.Integer.class ||
+                            //         value.getClass() == java.lang.Boolean.class ||
+                            //             value.getClass() == java.lang.Double.class ||
+                            //         value.getClass() == java.lang.Short.class ||
+                            //         value.getClass() == java.lang.Byte.class
+                            //         ) {
+                            //     buffer.append(value);
+                            // } else {
+                            //     buffer.append(dump(value));
+                            // }
+                            buffer.append(value);
+                        }
+                    } catch (IllegalAccessException e) {
+                        buffer.append(e.getMessage());
+                    }
+                    buffer.append("\n");
+                }
+                oClass = oClass.getSuperclass();
+            }
+            buffer.append("}\n");
+        }
+        return buffer.toString();
+    }
 }

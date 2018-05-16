@@ -38,39 +38,15 @@ dependencies {
   compile "com.xebialabs.deployit:udm-plugin-api:$apiVersion"
   compile "com.xebialabs.deployit:engine-spi:$apiVersion"
   compile group: 'com.google.guava', name: 'guava', version: '19.0'
-  compile group: 'org.antlr', name: 'ST4', version: '4.0.8'
+  compile group: 'org.apache.commons', name: 'commons-text', version: '1.3'
   compile group: 'net.conjur.api', name: 'conjur-api', version: '1.2'
   compile zipTree("$xlDeployHome/plugins/generic-plugin-7.5.0.xldp")
   compile zipTree("$xlDeployHome/plugins/remoting-plugin-7.5.0.xldp")
   compile zipTree("$xlDeployHome/plugins/base-plugin-7.5.0.xldp")
 
-  distBundle group: 'org.antlr', name: 'ST4', version: '4.0.8'
+  distBundle group: 'org.apache.commons', name: 'commons-text', version: '1.3'
   distBundle group: 'net.conjur.api', name: 'conjur-api', version: '1.2'
 }
-
-// dependencies {
-//   provided "com.xebialabs.deployit:udm-plugin-api:$apiVersion"
-//   provided "com.xebialabs.deployit:engine-spi:$apiVersion"
-//   compile group: 'com.google.guava', name: 'guava', version: '19.0'
-//   compile group: 'org.antlr', name: 'ST4', version: '4.0.8'
-//   compile group: 'net.conjur.api', name: 'conjur-api', version: '1.2'
-//   provided zipTree("$xlDeployHome/plugins/generic-plugin-7.5.0.xldp")
-//   provided zipTree("$xlDeployHome/plugins/remoting-plugin-7.5.0.xldp")
-//   provided zipTree("$xlDeployHome/plugins/base-plugin-7.5.0.xldp")
-// }
-
-// jar {
-//     dependsOn configurations.runtime
-//     from {
-//         (configurations.runtime - configurations.provided).collect {
-//             it.isDirectory() ? it : zipTree(it)
-//         }
-//     } {
-//         exclude "META-INF/*.SF"
-//         exclude "META-INF/*.DSA"
-//         exclude "META-INF/*.RSA"
-//     }
-// }
 
 license {
   header rootProject.file('License.md')

@@ -1,3 +1,37 @@
+- !policy
+  id: vms
+  body:
+    - &variables
+      - !variable host/dev/local_vm/username
+      - !variable host/dev/local_vm/password
+
+    - !group ops
+
+    - !permit
+      resource: *variables
+      privileges: [ read, execute ]
+      roles: !group ops
+
+- !policy
+  id: myapp
+  body:
+    - !layer
+      annotations:
+        description: Sample
+
+- !host local-vm
+
+- !grant
+  role: !group vms/ops
+  member: !layer myapp
+
+- !grant
+  role: !layer myapp
+  member: !host local-vm
+
+
+
+
 - !group &ops ops
 - !group &managers managers
 
@@ -25,7 +59,7 @@
     - *hostpassword
 
 - !permit
-  role: *localvm
+  role: *ops
   privileges: [ execute ]
   resource: 
     - *hostusername
