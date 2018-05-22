@@ -16,12 +16,24 @@
 
     <type-modification type="udm.Environment">
         <property name="overrideHostCredentials" kind="boolean" category="Conjur" required="false" default="false"/>
+        <property name="conjurServer" type-ref="conjur.Server"/>
         <property name="credentialsType"         kind="enum"    category="Conjur" required="false" default="CT_USERNAME"     enum-class="ext.deployit.community.plugin.conjur.ci.CredentialsType"/>
         <property name="conjurKeyTemplate"       kind="string"  category="Conjur" required="false" label="Key Template"      description="Template used to define the secret's key." default="host/${env.name}/${host.name}"/>
-        <property name="conjurURL"               kind="string"  category="Conjur" required="false" label="Conjur Server URL" description="Full URL, including http or https, to the Conjur server."/>
-        <property name="conjurAccount"           kind="string"  category="Conjur" required="false" label="Account"           description="ID of the Conjur account holding the secrets."/>
-        <property name="conjurUsername"          kind="string"  category="Conjur" required="false" label="Username"          description="User name used to access the secrets."/>
-        <property name="conjurPassword"          kind="string"  category="Conjur" required="false" label="Passwowrd"         description="Password for the above user." password="true"/>
         <property name="checkConnection"         kind="boolean" category="Conjur" required="false" default="true" />
     </type-modification>
+
+    <type type="conjur.Server" extends="configuration.HttpConnection" label="Conjur: Server">
+      <!-- engine information -->
+      <!-- property name="scriptLocation" default="delphix/TestConnection.py" hidden="true" / -->
+      <property name="conjurURL"      required="true"  label="Conjur Server URL" description="Full URL to the Conjur Server." />
+      <property name="conjurAccount"  required="true"  label="Account"           description="ID of the Conjur account holding the secrets."/>
+      <property name="username"       required="true"  label="Username"          description="Username for authentication."/>
+      <property name="password"       required="false" label="Password/Token"    description="Password for authentication." password="true"/>
+      <!-- proxy information -->
+      <property name="proxyHost" required="false" category="Proxy" />
+      <property name="proxyPort" required="false" category="Proxy" />
+      <property name="proxyUsername" required="false" category="Proxy" />
+      <property name="proxyPassword" password="true" required="false" category="Proxy" />
+    </type>
+
   </synthetic>
