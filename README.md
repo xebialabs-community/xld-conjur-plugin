@@ -1,8 +1,8 @@
-# CyberArk Conjur Host Plugin #
+# CyberArk Conjur Plugin #
 
 ## Overview ##
 
-The Conjur Host Plugin allows you to specify overthere.Host credentials that are used only for a particular deployment.
+The Conjur Plugin allows you to specify overthere.Host credentials that are used only for a particular deployment.
 
 The following features are available : 
 
