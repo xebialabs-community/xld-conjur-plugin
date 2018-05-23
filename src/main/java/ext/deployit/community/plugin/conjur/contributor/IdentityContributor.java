@@ -67,10 +67,13 @@ public class IdentityContributor
             return null;
 
         // create conjur client
-        System.setProperty(CONJUR_URL, environment.getProperty("conjurURL"));
-        System.setProperty(CONJUR_ACCOUNT, environment.getProperty("conjurAccount"));
-        String username = environment.getProperty("conjurUsername");
-        String password = environment.getProperty("conjurPassword");
+        ConfigurationItem conjurServer = environment.getProperty("conjurServer");
+        logger.trace(String.format("Using conjurServer: %s", conjurServer));
+
+        System.setProperty(CONJUR_URL, conjurServer.getProperty("url"));
+        System.setProperty(CONJUR_ACCOUNT, conjurServer.getProperty("account"));
+        String username = conjurServer.getProperty("username");
+        String password = conjurServer.getProperty("password");
 
         Conjur conjur = new Conjur(username, password);
 

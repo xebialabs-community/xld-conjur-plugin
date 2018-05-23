@@ -24,10 +24,10 @@
 
     <!-- Conjur server as shared configuration -->
     <type type="conjur.Server" extends="udm.Configuration" label="Conjur: Server">
-      <property name="conjurURL"      required="true" label="Conjur Server URL" description="Full URL to the Conjur Server." />
-      <property name="conjurAccount"  required="true" label="Account"           description="ID of the Conjur account holding the secrets."/>
-      <property name="username"       required="true" label="Username"          description="Username for authentication."/>
-      <property name="password"       required="true" label="Password/Token"    description="Password for authentication." password="true"/>
+      <property name="url"      required="true" kind="string" label="Conjur Server URL" description="Full URL to the Conjur Server." />
+      <property name="account"  required="true" kind="string" label="Account"           description="ID of the Conjur account holding the secrets."/>
+      <property name="username" required="true" kind="string" label="Username"          description="Username for authentication."/>
+      <property name="password" required="true" kind="string" label="Password/Token"    description="Password for authentication." password="true"/>
     </type>
 
   </synthetic>

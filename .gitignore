@@ -6,5 +6,6 @@
 .settings
 pom.xml
 build
+bin
 supervisord.*
 xld-conjur-host-plugin.iml
