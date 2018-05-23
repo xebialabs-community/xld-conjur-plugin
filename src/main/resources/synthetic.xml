@@ -14,6 +14,10 @@
   xmlns="http://www.xebialabs.com/deployit/synthetic"
   xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
 
+   <type type="conjur.Dictionary" extends="udm.Dictionary">
+        <property name="conjurServer"            kind="ci"        category="Conjur" required="false" referenced-type="conjur.Server"/>
+    </type>
+
     <type-modification type="udm.Environment">
         <property name="overrideHostCredentials" kind="boolean"   category="Conjur" required="false" default="false"/>
         <property name="conjurServer"            kind="ci"        category="Conjur" required="false" referenced-type="conjur.Server"/>
