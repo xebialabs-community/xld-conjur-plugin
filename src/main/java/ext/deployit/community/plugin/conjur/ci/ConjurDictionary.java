@@ -44,22 +44,22 @@ import net.conjur.api.Conjur;
 )
 public class ConjurDictionary extends Dictionary {
 
-    // These are from the conjur endpoints class.  Unfortunately, private.
-    private static final String CONJUR_URL = "CONJUR_APPLIANCE_URL";
-    private static final String CONJUR_ACCOUNT = "CONJUR_ACCOUNT";
 
     @Override
     public Map<String, String> getEntries() {
 
+        System.out.println("LAD - Overriding getEntries");
+
         ConfigurationItem conjurServer = this.getProperty("conjurServer");
         logger.trace(String.format("Using conjurServer: %s", conjurServer));
 
-        System.setProperty(CONJUR_URL, conjurServer.getProperty("url"));
-        System.setProperty(CONJUR_ACCOUNT, conjurServer.getProperty("account"));
-        String username = conjurServer.getProperty("username");
-        String password = conjurServer.getProperty("password");
+        /*System.setProperty("CONJUR_ACCOUNT", conjurServer.account);
+        System.setProperty("CONJUR_AUTHN_LOGIN", conjurServer.username);
+        System.setProperty("CONJUR_AUTHN_API_KEY", conjurServer.password);
+        System.setProperty("CONJUR_APPLIANCE_URL", conjurServer.url);*/
 
-        Conjur conjur = new Conjur(username, password);
+
+        Conjur conjur = new Conjur();
 
         Map<String, String> data = super.getEntries();
 
@@ -78,6 +78,7 @@ public class ConjurDictionary extends Dictionary {
                     String secretVal = getConjurValue(conjur, conjurPath);
                     if (secretVal != null && !secretVal.isEmpty())
                     {
+                        System.out.println("LAD - We have a secret value and it is ->"+secretVal);
                         // update the map with new value
                         data.put(key, secretVal);
                     }

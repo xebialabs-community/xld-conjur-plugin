@@ -35,6 +35,7 @@ public class ConjurControlTaskDelegate {
 
     @Delegate(name = "pcShellScript")
     public static List<Step> executedPCScriptDelegate(ConfigurationItem item, String name, Map<String, String> args, Parameters params) {
+        System.out.println("LAD - In executedPCScriptDelegate");
         HostContainer targetHost = determineHost(item, name, args.get("host"), params);
         if (targetHost.getHost().getOs().equals(OperatingSystemFamily.UNIX)) {
             if (params.hasProperty("unixUsername")) {
@@ -74,6 +75,7 @@ public class ConjurControlTaskDelegate {
         Map<String, Object> thisVarContext = newHashMap();
 
         thisVarContext.put("thisCi", item);
+        System.out.println("LAD- Just placed thisCi in context");
         thisVarContext.put("targetHost", host);
 
         if (item instanceof Container) {
