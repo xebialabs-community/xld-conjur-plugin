@@ -14,19 +14,8 @@
     Note: If you modify this file and automatic reloading is disabled in `planner.conf`, you must restart the XL Deploy server.
 -->
 <rules xmlns="http://www.xebialabs.com/xl-deploy/xl-rules">
-    <rule name="conjur.CreateStack" scope="deployed">
-        <conditions>
-            <operation>CREATE</operation>
-            <operation>MODIFY</operation>
-        </conditions>
-        <steps>
-            <jython>
-                <description expression="true">"Deploying stack '%s'" % deployed.name</description>
-                <jython-context>
-                    <!-- environment is passed in to the script to get template parameters -->
-                    <environment expression="true">deployedApplication.environment</environment>
-                </jython-context>                
-                <script>openstack/rule/create_stack.py</script>
-            </jython>
+    <rule name="conjur.Injector" scope="pre-plan">
+        <planning-script-path>conjur/rule/fetch-info-from-conjur.py</planning-script-path>
     </rule>
+
 </rules>
