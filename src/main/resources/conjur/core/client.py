@@ -23,6 +23,8 @@ class ConjurClient(object):
 
 
     def __init__(self, url, account, username, password):
+        print "Creating Conjur client for '%s', account '%s', user '%s'" % (url, account, username)
+        
         System.setProperty('CONJUR_APPLIANCE_URL', url)
         System.setProperty('CONJUR_ACCOUNT', account)
         System.setProperty('CONJUR_AUTHN_LOGIN', username)

@@ -8,14 +8,34 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+import sys
+
 from conjur.core.client import ConjurClient
 
 def process(task_vars):
-    server = task_vars['thisCi']
+    target = task_vars['target']
 
-    conjur = ConjurClient.new_instance(server)
-    
-    print "Done"
+    conjur_server = target.conjurServer
+    print "Connection to client {0} {1}".format(conjur_server.name, conjur_server.url)
+
+    conjur = ConjurClient.new_instance(conjur_server)
+
+    if target.vaultKey is None:
+        key = "secret/{0}".format(target.id)
+    else:
+        key = target.vaultKey
+
+    print 'the vault key is {0}'.format(key)
+    read_values = conjur.retrieve_secret(key)
+
+    if read_values is None:
+        print "Key {0} not found".format(key)
+        sys.exit(1)
+
+    for k in read_values['data']:
+        v = read_values['data'][k]
+        print "overide {0} property".format(k)
+        target.setProperty(k, v)
 
 
 if __name__ == '__main__' or __name__ == '__builtin__':

@@ -14,8 +14,9 @@
     Note: If you modify this file and automatic reloading is disabled in `planner.conf`, you must restart the XL Deploy server.
 -->
 <rules xmlns="http://www.xebialabs.com/xl-deploy/xl-rules">
+    <!-- Look for hosts that have Conjur override enabled.  Add a deployment step for those hosts -->
     <rule name="conjur.Injector" scope="pre-plan">
-        <planning-script-path>conjur/rule/fetch-info-from-conjur.py</planning-script-path>
+        <planning-script-path>conjur/rule/planning/fetch-host-info.py</planning-script-path>
     </rule>
 
 </rules>

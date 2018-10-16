@@ -14,16 +14,10 @@
   xmlns="http://www.xebialabs.com/deployit/synthetic"
   xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
 
-   <type type="conjur.DynamicDictionary" extends="dynamic.PythonDynamicDictionary">
-        <property name="conjurServer"            kind="ci"        category="Conjur" required="false" referenced-type="conjur.Server"/>
-        <property name="scriptFile" default="dict/conjur/load_data.py" hidden="true"/>
+    <type type="conjur.DynamicDictionary" extends="conjur.ConjurDictionary">
+        <property name="conjurServer" kind="ci" category="Conjur" required="false" referenced-type="conjur.Server"/>
+        <method name="load" label="Test Dictionary " delegate="jythonScript" script="conjur/control/test_load.py" />
     </type>
-
-    <type-modification type="dynamic.PythonDynamicDictionary">
-        <method name="load" label="Load the dictionary " delegate="jythonScript"
-                script="dict/python/load.py">
-        </method>
-    </type-modification>
 
     <type-modification type="udm.Environment">
         <property name="overrideHostCredentials" kind="boolean"   category="Conjur" required="false" default="false"/>
@@ -48,7 +42,6 @@
       <property name="password" required="true" kind="string" label="Password/API key"    description="Password or API key for authentication." password="true"/>
       <!-- control tasks -->
       <method name="checkConnection" label="Check Connection" delegate="jythonScript" script="conjur/control/check_connection.py"/>
-
     </type>
 
   </synthetic>
