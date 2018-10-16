@@ -8,17 +8,29 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from conjur.core.client import ConjurClient
+from net.conjur.api import Conjur
+from net.conjur.api import Credentials
+from net.conjur.api import Endpoints
+from java.lang import System
+from java.lang import Exception
 
-def process(task_vars):
-    server = task_vars['thisCi']
+""" Conjur client """
+class ConjurClient(object):
 
-    conjur = ConjurClient.new_instance(server)
-    retrievedSecret = conjur.retrieveSecret("db/password")
-    
-    print "The password is -> ", retrievedSecret
-    print "Done"
+    @staticmethod
+    def new_instance(container):
+        return ConjurClient(container.url, container.account, container.username, container.password)
 
 
-if __name__ == '__main__' or __name__ == '__builtin__':
-    process(locals())
+    def __init__(self, url, account, username, password):
+        System.setProperty('CONJUR_APPLIANCE_URL', url)
+        System.setProperty('CONJUR_ACCOUNT', account)
+        System.setProperty('CONJUR_AUTHN_LOGIN', username)
+        System.setProperty('CONJUR_AUTHN_API_KEY', password)
+
+        self.conjur = Conjur()
+
+
+    def retrieve_secret(self, path):
+        return self.conjur.variables().retrieveSecret(path)
+
