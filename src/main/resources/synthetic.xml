@@ -14,8 +14,10 @@
   xmlns="http://www.xebialabs.com/deployit/synthetic"
   xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
 
+    <!-- Dictionary that loads values from Conjur -->
     <type type="conjur.DynamicDictionary" extends="conjur.ConjurDictionary">
         <property name="conjurServer" kind="ci" category="Conjur" required="false" referenced-type="conjur.Server"/>
+        <!-- control tasks -->
         <method name="load" label="Test Dictionary " delegate="jythonScript" script="conjur/control/test_load.py" />
     </type>
 
@@ -28,12 +30,12 @@
 
     <!-- Conjur server as shared configuration -->
     <type type="conjur.Server" extends="udm.Configuration" label="Conjur: Server">
-      <property name="url"      required="true" kind="string" label="Conjur Server URL" description="Full URL to the Conjur Server." />
-      <property name="account"  required="true" kind="string" label="Account"           description="ID of the Conjur account holding the secrets."/>
-      <property name="username" required="true" kind="string" label="Username"          description="Username or host name for authentication. Note: Prepend host name with host/"/>
-      <property name="password" required="true" kind="string" label="Password/API key"    description="Password or API key for authentication." password="true"/>
-      <!-- control tasks -->
-      <method name="checkConnection" label="Check Connection" delegate="jythonScript" script="conjur/control/check_connection.py"/>
+        <property name="url"      required="true" kind="string" label="Conjur Server URL" description="Full URL to the Conjur Server." />
+        <property name="account"  required="true" kind="string" label="Account"           description="ID of the Conjur account holding the secrets."/>
+        <property name="username" required="true" kind="string" label="Username"          description="Username or host name for authentication. Note: Prepend host name with host/"/>
+        <property name="password" required="true" kind="string" label="Password/API key"    description="Password or API key for authentication." password="true"/>
+        <!-- control tasks -->
+        <method name="checkConnection" label="Check Connection" delegate="jythonScript" script="conjur/control/check_connection.py"/>
     </type>
 
   </synthetic>

@@ -8,8 +8,10 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+PREFIX = "$conjur:"
+
 """
-During planning, look for hosts that have "managedByConjur" enabled.  Those targets will get
+During planning, look for hosts that have property values with '$conjur:' prefix.  Those targets will get
 a deployment step added that calls the conjur server for secrets.
 """
 def targets():
@@ -17,8 +19,18 @@ def targets():
     for delta in specification.deltas:
         deployed = delta.deployedOrPrevious
         container = deployed.container
-        if container.hasProperty('managedByConjur') and container.managedByConjur:
-            targets.append(container)
+
+        # get properties of container
+        descr = metadataService.findDescriptor(container.type)
+
+        # scan property values for '$conjur:' prefix
+        for prop in descr.propertyDescriptors:
+            val = container.getProperty(prop.name)
+
+            if isinstance(val, basestring) and val.startswith(PREFIX):
+                # this is a host we'll process during deployment
+                targets.append(container)
+                break
 
     return set(targets)
 

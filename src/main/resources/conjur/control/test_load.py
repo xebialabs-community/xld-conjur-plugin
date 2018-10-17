@@ -10,9 +10,11 @@
 
 from conjur.core.client import ConjurClient
 
+PREFIX = "$conjur:"
+
 def check_dict_value(conjur, key, val):
     print "..checking dictionary entry '%s' " % key,
-    if val.startswith('$conjur:'):
+    if val.startswith(PREFIX):
         path = val[8:]
         secret = conjur.retrieve_secret(path)
         if secret is None:

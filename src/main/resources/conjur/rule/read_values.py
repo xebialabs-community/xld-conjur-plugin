@@ -12,6 +12,8 @@ import sys
 
 from conjur.core.client import ConjurClient
 
+PREFIX = "$conjur:"
+
 def process(task_vars):
     target = task_vars['target']
 
@@ -19,22 +21,19 @@ def process(task_vars):
 
     conjur = ConjurClient.new_instance(conjur_server)
 
-    if target.conjurKey is None:
-        key = "secret/{0}".format(target.id)
-    else:
-        key = target.conjurKey
+    # get properties of container
+    descr = metadataService.findDescriptor(target.type)
 
-    print 'the conjur key is {0}'.format(key)
-    read_values = conjur.retrieve_secret(key)
+    # scan property values for '$conjur:' prefix
+    for prop in descr.propertyDescriptors:
+        val = target.getProperty(prop.name)
 
-    if read_values is None:
-        print "Key {0} not found".format(key)
-        sys.exit(1)
-
-    for k in read_values['data']:
-        v = read_values['data'][k]
-        print "overide {0} property".format(k)
-        target.setProperty(k, v)
+        if isinstance(val, basestring) and val.startswith(PREFIX):
+            # this is a host we'll process during deployment
+            path = val[8:]
+            secret = conjur.retrieve_secret(path)
+            print "..overiding {0}.{1} property with conjur value".format(target.name, prop.name)
+            target.setProperty(prop.name, secret)
 
 
 if __name__ == '__main__' or __name__ == '__builtin__':

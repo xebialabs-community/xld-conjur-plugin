@@ -44,15 +44,16 @@ public class ConjurDictionary extends Dictionary
 
         Conjur conjur = new Conjur();
 
-        ConfigurationItem env = this.getProperty("environment");
-        ConfigurationItem app = this.getProperty("deployedApplication");
+        // TODO: these are not properties of a dictionary.  I don't know how to get them.
+        // ConfigurationItem env = this.getProperty("environment");
+        // ConfigurationItem app = this.getProperty("deployedApplication");
 
-        // set context variables
-        Map<String, String> contextVars = new HashMap<>();
-        contextVars.put("{{env.id}}", env.getProperty("id"));
-        contextVars.put("{{env.name}}", env.getProperty("name"));
-        contextVars.put("{{app.id}}", app.getProperty("id"));
-        contextVars.put("{{app.name}}", app.getProperty("name"));
+        // // set context variables
+        // Map<String, String> contextVars = new HashMap<>();
+        // contextVars.put("{{env.id}}", env.getProperty("id"));
+        // contextVars.put("{{env.name}}", env.getProperty("name"));
+        // contextVars.put("{{app.id}}", app.getProperty("id"));
+        // contextVars.put("{{app.name}}", app.getProperty("name"));
         
         Map<String, String> data = super.getEntries();
 
@@ -68,22 +69,23 @@ public class ConjurDictionary extends Dictionary
                 String conjurPath = val.substring(CONJUR_PREFIX.length());
                 if ( conjurPath != null && !conjurPath.isEmpty() )
                 {
+                    // TODO: pending the above TODO
                     // do property placeholders substitution in the path; e.g. app.name, env.name
-                    if ( conjurPath.indexOf("{{") >= 0)
-                    {
-                        for (String ckey : contextVars.keySet()) 
-                        {
-                            if ( conjurPath.indexOf(ckey) >= 0)
-                            {
-                                conjurPath = conjurPath.replaceAll(ckey, contextVars.get(ckey));
-                            }
-                        }
-                    }
+                    // if ( conjurPath.indexOf("{{") >= 0)
+                    // {
+                    //     for (String ckey : contextVars.keySet()) 
+                    //     {
+                    //         if ( conjurPath.indexOf(ckey) >= 0)
+                    //         {
+                    //             conjurPath = conjurPath.replaceAll(ckey, contextVars.get(ckey));
+                    //         }
+                    //     }
+                    // }
 
                     logger.info("ConjurPath = "+conjurPath);
 
                     // retrieve secret value from conjur
-                    String secretVal = getConjurValue(conjur, conjurPath);
+                    String secretVal = conjur.variables().retrieveSecret(conjurPath);
                     if (secretVal != null && !secretVal.isEmpty())
                     {
                         logger.trace("We have a secret value and it is ->"+secretVal);
@@ -96,11 +98,6 @@ public class ConjurDictionary extends Dictionary
         }
 
         return data;
-    }
-
-    protected String getConjurValue(Conjur conjur, String key)
-    {
-        return conjur.variables().retrieveSecret(key);
     }
 
     private static Logger logger = LoggerFactory.getLogger(ConjurDictionary.class);
