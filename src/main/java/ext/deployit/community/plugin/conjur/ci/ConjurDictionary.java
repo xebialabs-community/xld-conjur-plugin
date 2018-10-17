@@ -10,30 +10,15 @@
 package ext.deployit.community.plugin.conjur.ci;
 
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.google.common.cache.*;
 
+import com.xebialabs.deployit.plugin.api.udm.ConfigurationItem;
 import com.xebialabs.deployit.plugin.api.udm.Dictionary;
 import com.xebialabs.deployit.plugin.api.udm.Metadata;
-import com.xebialabs.deployit.plugin.api.udm.Property;
-import com.xebialabs.deployit.plugin.api.deployment.planning.PrePlanProcessor;
-import com.xebialabs.deployit.plugin.api.deployment.specification.Delta;
-import com.xebialabs.deployit.plugin.api.deployment.specification.DeltaSpecification;
-import com.xebialabs.deployit.plugin.api.flow.Step;
-import com.xebialabs.deployit.plugin.api.reflect.PropertyDescriptor;
-import com.xebialabs.deployit.plugin.api.reflect.Type;
-import com.xebialabs.deployit.plugin.api.udm.ConfigurationItem;
-import com.xebialabs.deployit.plugin.api.udm.Deployed;
-import com.xebialabs.deployit.plugin.api.udm.DeployedApplication;
-import com.xebialabs.deployit.plugin.api.udm.Environment;
-import com.xebialabs.deployit.plugin.api.udm.Version;
-import com.xebialabs.deployit.plugin.overthere.Host;
-import com.xebialabs.deployit.plugin.overthere.HostContainer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.conjur.api.Conjur;
 
@@ -42,49 +27,74 @@ import net.conjur.api.Conjur;
         description = "A Dictionary that retrieves the secret value from conjur",
         virtual = true
 )
-public class ConjurDictionary extends Dictionary {
-
+public class ConjurDictionary extends Dictionary 
+{
+    private static final String CONJUR_PREFIX = "$conjur:";
 
     @Override
-    public Map<String, String> getEntries() {
-
-        System.out.println("LAD - Overriding getEntries");
-
+    public Map<String, String> getEntries() 
+    {
         ConfigurationItem conjurServer = this.getProperty("conjurServer");
-        logger.trace(String.format("Using conjurServer: %s", conjurServer));
+        logger.info(String.format("Using conjurServer: %s", conjurServer));
 
-        /*System.setProperty("CONJUR_ACCOUNT", conjurServer.account);
-        System.setProperty("CONJUR_AUTHN_LOGIN", conjurServer.username);
-        System.setProperty("CONJUR_AUTHN_API_KEY", conjurServer.password);
-        System.setProperty("CONJUR_APPLIANCE_URL", conjurServer.url);*/
-
+        System.setProperty("CONJUR_ACCOUNT", conjurServer.getProperty("account"));
+        System.setProperty("CONJUR_AUTHN_LOGIN", conjurServer.getProperty("username"));
+        System.setProperty("CONJUR_AUTHN_API_KEY", conjurServer.getProperty("password"));
+        System.setProperty("CONJUR_APPLIANCE_URL", conjurServer.getProperty("url"));
 
         Conjur conjur = new Conjur();
 
+        ConfigurationItem env = this.getProperty("environment");
+        ConfigurationItem app = this.getProperty("deployedApplication");
+
+        // set context variables
+        Map<String, String> contextVars = new HashMap<>();
+        contextVars.put("{{env.id}}", env.getProperty("id"));
+        contextVars.put("{{env.name}}", env.getProperty("name"));
+        contextVars.put("{{app.id}}", app.getProperty("id"));
+        contextVars.put("{{app.name}}", app.getProperty("name"));
+        
         Map<String, String> data = super.getEntries();
 
-        for (Map.Entry<String, String> entry : data.entrySet()) {
+        for (Map.Entry<String, String> entry : data.entrySet()) 
+        {
             String key = entry.getKey();
             String val = entry.getValue();
-            logger.info(key + ":" + val);
-            if (val != null && val.startsWith("$conjur:"))
+            logger.info(String.format("Checking %s=%s", key, val));
+
+            if (val != null && val.startsWith(CONJUR_PREFIX))
             {
                 // get the path substring
-                String conjurPath = val.substring(val.indexOf(":"));
-                if(conjurPath != null && !conjurPath.isEmpty())
+                String conjurPath = val.substring(CONJUR_PREFIX.length());
+                if ( conjurPath != null && !conjurPath.isEmpty() )
                 {
+                    // do property placeholders substitution in the path; e.g. app.name, env.name
+                    if ( conjurPath.indexOf("{{") >= 0)
+                    {
+                        for (String ckey : contextVars.keySet()) 
+                        {
+                            if ( conjurPath.indexOf(ckey) >= 0)
+                            {
+                                conjurPath = conjurPath.replaceAll(ckey, contextVars.get(ckey));
+                            }
+                        }
+                    }
+
                     logger.info("ConjurPath = "+conjurPath);
+
                     // retrieve secret value from conjur
                     String secretVal = getConjurValue(conjur, conjurPath);
                     if (secretVal != null && !secretVal.isEmpty())
                     {
-                        System.out.println("LAD - We have a secret value and it is ->"+secretVal);
+                        logger.trace("We have a secret value and it is ->"+secretVal);
+
                         // update the map with new value
                         data.put(key, secretVal);
                     }
                 }
             }
         }
+
         return data;
     }
 

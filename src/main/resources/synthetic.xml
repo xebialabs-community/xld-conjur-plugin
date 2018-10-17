@@ -19,14 +19,6 @@
         <method name="load" label="Test Dictionary " delegate="jythonScript" script="conjur/control/test_load.py" />
     </type>
 
-    <type-modification type="udm.Environment">
-        <property name="overrideHostCredentials" kind="boolean"   category="Conjur" required="false" default="false"/>
-        <property name="conjurServer"            kind="ci"        category="Conjur" required="false" referenced-type="conjur.Server"/>
-        <property name="credentialsType"         kind="enum"      category="Conjur" required="false" default="CT_USERNAME" enum-class="ext.deployit.community.plugin.conjur.ci.CredentialsType"/>
-        <property name="conjurKeyTemplate"       kind="string"    category="Conjur" required="false" label="Key Template"  description="Template used to define the secret's key." default="host/${env.name}/${host.name}"/>
-        <property name="checkConnection"         kind="boolean"   category="Conjur" required="false" default="true" />
-    </type-modification>
-
     <!-- Enable retrieve of host credentials from Conjur -->
     <type-modification type="overthere.Host">
         <property name="managedByConjur"  kind="boolean" category="Conjur" required="false" default="false" />

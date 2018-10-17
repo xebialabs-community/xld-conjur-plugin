@@ -16,16 +16,15 @@ def process(task_vars):
     target = task_vars['target']
 
     conjur_server = target.conjurServer
-    print "Connection to client {0} {1}".format(conjur_server.name, conjur_server.url)
 
     conjur = ConjurClient.new_instance(conjur_server)
 
-    if target.vaultKey is None:
+    if target.conjurKey is None:
         key = "secret/{0}".format(target.id)
     else:
-        key = target.vaultKey
+        key = target.conjurKey
 
-    print 'the vault key is {0}'.format(key)
+    print 'the conjur key is {0}'.format(key)
     read_values = conjur.retrieve_secret(key)
 
     if read_values is None:

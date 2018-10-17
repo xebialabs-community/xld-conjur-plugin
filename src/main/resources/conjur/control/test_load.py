@@ -12,14 +12,17 @@ from conjur.core.client import ConjurClient
 
 def check_dict_value(conjur, key, val):
     print "..checking dictionary entry '%s' " % key,
-    if '${conjur:' in val:
-        path = val[9:-1]
+    if val.startswith('$conjur:'):
+        path = val[8:]
         secret = conjur.retrieve_secret(path)
         if secret is None:
             print "ERROR: Secret not found for path '%s'" % path
             return 1
+        else:
+            print "FOUND"
+    else:
+        print "skipping"
 
-    print "FOUND"
     return 0
 
 def process(task_vars):
