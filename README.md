@@ -81,3 +81,6 @@ Like the DynamicDictionary, instead of entering the actual value, enter '$conjur
 
 Indicate the Conjur Server to use for lookups.
 
+## Developer Notes ##
+
+* Set __xlDeployHome__ in __gradle.properties__ to your local XL Deploy instance.  Some XL Deploy packages are needed for the plugin to compile.
