@@ -1,16 +1,23 @@
-# CyberArk Conjur Plugin #
+# XLD Conjur Plugin #
+
+[![Build Status](https://travis-ci.org/xebialabs-community/xld-conjur-plugin.svg?branch=master)](https://travis-ci.org/xebialabs-community/xld-conjur-plugin)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/<insert project id>)](https://www.codacy.com/app/erasmussen39/xld-conjur-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=erasmussen39/xld-conjur-plugin&amp;utm_campaign=Badge_Grade)
+[![Maintainability](https://api.codeclimate.com/v1/badges/<insert project id>/maintainability)](https://codeclimate.com/github/erasmussen39/xld-conjur-plugin/maintainability)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Github All Releases][xld-conjur-plugin-downloads-image]]()
+
 
 ## Overview ##
 
 The Conjur Plugin adds two capabilities to XL Deploy:
 
 * New DynamicDictionary to __Environments__
-* Conjur override to retrieve credentials for __Hosts__
+* Retrieve credentials for __overthere.Hosts__
 
 ## Requirements ##
 
 * **XLDeploy**: version 8.0.0+
-* **Conjur**: version 5.0+
+* **Cyberark Conjur**: version 5.0+
 
 ## Installation ##
 
@@ -20,9 +27,11 @@ Place the plugin .xldp file into your `SERVER_HOME/plugins` directory.
 
 Begin by configuring a Conjur server in the Configuration repository.
 
+![ConjurServerConfiguration](images/conjur_server_config.png)
+
 ### Conjur URL ###
 
-The URL to your Conjur Server.  The value should include the protocol.  E.g. http:// or https://.
+The URL to your Conjur Server.  The value should include the protocol e.g. http:// or https://.
 
 ### Conjur Account ###
 
@@ -32,15 +41,13 @@ The Conjur account or namespace that holds the variables.
 
 The username XL Deploy will use to authenticate to the Conjur server.
 
-### Conjur Password ###
+### Conjur Password / API Key ###
 
-The password XL Deploy will use to authenticate to the Conjur server.
+The password or API Key XL Deploy will use to authenticate to the Conjur server.
 
-### Check Connection ###
+### Control Task : Check Connection ###
 
-If true, XL Deploy will check connection to the host with the credentials supplied by Conjur before the deployment begins.
-
-
+The Conjur Plugin will check connection to the Conjur host with the credentials supplied.
 
 ## DynamicDictionary ##
 
@@ -50,33 +57,27 @@ The Conjur DynamicDictionary is available under __Environments -> New -> Conjur 
 $conjur:<key path>
 ```
 
-At deployment time, when the dictionary is used for property placeholder substitution in the application, any key value that starts with '$conjur:' is a signal to the application to lookup the value in the associated Conjur server.  The plugin will lookup the Conjur value using the supplied key path and place that value in the dictionary.  Note that this is runtime behavior when values are retrieved from the dictionary.  The dictionary itself is not modified.
+![ConjurDynamicDictionary](images/conjur_dynamic_dictionary.png)
 
-### Key Path Property Substitution ###
+At deployment time, when the dictionary is used for property placeholder substitution in the application, any key value that starts with '$conjur:' is a signal to the application to lookup the value in the associated Conjur server.  The plugin will lookup the Conjur value using the supplied key path and place that value in the dictionary.  Note that this is runtime behavior.  The values are looked up and supplied when values are retrieved from the dictionary.  The dictionary itself is not modified.
 
-The key path you specify for the dictionary entry value may itself have property placeholders.  The following context variables are available to you to construct the key:
+### Conjur Server ###
 
-* app.name
-* env.name
-* host.name
-* host.address
-* host.username
+Indicate the Conjur Server to use for lookups.
 
-#### Example: ####
- 
-The simplest key template might be:
+### Control Task : Test Dictionary ###
 
-```
-host/<host.name>
-```
+The Conjur Plugin will call the Conjur server and attempt to retrieve values.  If any key referenced in the dictionary cannot be found in Conjur, an error will be raised.
 
-If the host name were 'vm123' and the Credential Type is CT_USERNAME, this would result in these two variable keys:
+## Host Credentials ##
 
-```
-host/vm123/username
-host/vm123/password
-```
+Any __Infrastructure__ host-type that has __overthere.Host__ as its parent (e.g. overthere.SshHost or overthere.SmbHost), can now use Conjur values for any of its properties.
 
-## Notes ##
-- The 'checkConnection' property allows to generate CheckConnection Step on all the hosts involved in the Conjur credentials process.
-- Use _gradlew clean build_ for gradle build
+![ConjurHostProperties](images/conjur_host_properties.png)
+
+Like the DynamicDictionary, instead of entering the actual value, enter '$conjur:\<key path\>'.  (Note that password fields will not show the entry as in the example above.)  During the deployment process, the plugin will retrieve the values from Conjur.
+
+### Conjur Server ###
+
+Indicate the Conjur Server to use for lookups.
+

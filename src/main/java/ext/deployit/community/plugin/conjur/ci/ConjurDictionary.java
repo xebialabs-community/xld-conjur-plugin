@@ -10,7 +10,6 @@
 package ext.deployit.community.plugin.conjur.ci;
 
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.xebialabs.deployit.plugin.api.udm.ConfigurationItem;
@@ -44,17 +43,6 @@ public class ConjurDictionary extends Dictionary
 
         Conjur conjur = new Conjur();
 
-        // TODO: these are not properties of a dictionary.  I don't know how to get them.
-        // ConfigurationItem env = this.getProperty("environment");
-        // ConfigurationItem app = this.getProperty("deployedApplication");
-
-        // // set context variables
-        // Map<String, String> contextVars = new HashMap<>();
-        // contextVars.put("{{env.id}}", env.getProperty("id"));
-        // contextVars.put("{{env.name}}", env.getProperty("name"));
-        // contextVars.put("{{app.id}}", app.getProperty("id"));
-        // contextVars.put("{{app.name}}", app.getProperty("name"));
-        
         Map<String, String> data = super.getEntries();
 
         for (Map.Entry<String, String> entry : data.entrySet()) 
@@ -69,19 +57,6 @@ public class ConjurDictionary extends Dictionary
                 String conjurPath = val.substring(CONJUR_PREFIX.length());
                 if ( conjurPath != null && !conjurPath.isEmpty() )
                 {
-                    // TODO: pending the above TODO
-                    // do property placeholders substitution in the path; e.g. app.name, env.name
-                    // if ( conjurPath.indexOf("{{") >= 0)
-                    // {
-                    //     for (String ckey : contextVars.keySet()) 
-                    //     {
-                    //         if ( conjurPath.indexOf(ckey) >= 0)
-                    //         {
-                    //             conjurPath = conjurPath.replaceAll(ckey, contextVars.get(ckey));
-                    //         }
-                    //     }
-                    // }
-
                     logger.info("ConjurPath = "+conjurPath);
 
                     // retrieve secret value from conjur

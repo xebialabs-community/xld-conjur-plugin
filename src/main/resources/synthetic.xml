@@ -23,9 +23,7 @@
 
     <!-- Enable retrieve of host credentials from Conjur -->
     <type-modification type="overthere.Host">
-        <property name="managedByConjur"  kind="boolean" category="Conjur" required="false" default="false" />
         <property name="conjurServer"     kind="ci"      category="Conjur" required="false" referenced-type="conjur.Server"/>
-        <property name="conjurKey"        kind="string"  category="Conjur" required="false" description="Alternative key to look up in the vault, instead it is secret/[ci.id]"/>
     </type-modification>
 
     <!-- Conjur server as shared configuration -->
