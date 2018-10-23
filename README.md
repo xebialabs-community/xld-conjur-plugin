@@ -1,8 +1,6 @@
 # XLD Conjur Plugin #
 
 [![Build Status](https://travis-ci.org/xebialabs-community/xld-conjur-plugin.svg?branch=master)](https://travis-ci.org/xebialabs-community/xld-conjur-plugin)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/<insert project id>)](https://www.codacy.com/app/erasmussen39/xld-conjur-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=erasmussen39/xld-conjur-plugin&amp;utm_campaign=Badge_Grade)
-[![Maintainability](https://api.codeclimate.com/v1/badges/<insert project id>/maintainability)](https://codeclimate.com/github/erasmussen39/xld-conjur-plugin/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Github All Releases][xld-conjur-plugin-downloads-image]]()
 
