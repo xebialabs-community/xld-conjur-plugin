@@ -2,12 +2,11 @@ sudo: required
 language: java
 install: true
 script: "./gradlew assemble"
-services:
-- docker
+
 deploy:
   provider: releases
   api_key:
-    secure: <need api key>
+    secure: gEphCD8YnvF/9fJCqgKrUBNurLK5FBiZrHPDzzGkBUEJ6Ju+/YVU+8LMpzaPx0QQEpURf6GL5cD3eb4oO45Y6zzqymLQ9BShx1T9LD2DjdPd057cBG1D0YARJSA1liAQ8hUg4vep9bB91HhnXy6m55Ur2L3IekwT+KC8kdqZtAcMmkR6x9xr5GEaY3zfwOfOkekkchDIiPqZ1wP7a7aYEF8o8Y20PMkdvUp4XlcqMOtO4VGslBOZsY5jSf2pqIW83UHpWU3leeLO75hnH2y/xow52RNJ6nKPmdDNClTFKv5amkKaILOEP7iTGxAcFLevKSZZxQNNu6UeSaFkdIqoxzkOvv7UbvD6tN6l8LQ09ZNcebRwpCMXs+UZ98EkqLkKebAKJaJqbb/HE+Ef+8r8kqhIZ1v6iAp05QPw0k2js/9A9ao2U8lt83013m8uvVeR7uIU0gHrNX5DLKm5xavOymZu2vBbXvP2HwSzAzPlhVrRTF71YDpKoow2NPthMKkUM6QjPiwK2ivdYdi3CXbtlltyWbqNb1f0dg59OtmockYu9bHevUVRbY498l1LPE5GCLxzISNv1HEUEGL4EstrCAuMhsghowhr4f9YGLEtQjJrT3AMC5Sh3v90zkpyjp6IQqwxIIRgik9TzHsE6XGfwbsLMR3QYjtb4/plClKdmLo=
   file: "./build/distributions/xld-conjur-plugin-1.0.0.xldp"
   skip_cleanup: true
   on:
