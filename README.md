@@ -1,9 +1,14 @@
 # XLD Conjur Plugin #
 
-[![Build Status](https://travis-ci.org/xebialabs-community/xld-conjur-plugin.svg?branch=master)](https://travis-ci.org/xebialabs-community/xld-conjur-plugin)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Github All Releases][xld-conjur-plugin-downloads-image]]()
+[![Build Status][xld-conjur-plugin-travis-image]][xld-conjur-plugin-travis-url]
+[![License: MIT][xld-conjur-plugin-license-image]][xld-conjur-plugin-license-url]
+![Github All Releases][xld-conjur-plugin-downloads-image]
 
+[xld-conjur-plugin-travis-image]: https://travis-ci.org/xebialabs-community/xld-conjur-plugin.svg?branch=master
+[xld-conjur-plugin-travis-url]: https://travis-ci.org/xebialabs-community/xld-conjur-plugin
+[xld-conjur-plugin-license-image]: https://img.shields.io/badge/License-MIT-yellow.svg
+[xld-conjur-plugin-license-url]: https://opensource.org/licenses/MIT
+[xld-conjur-plugin-downloads-image]: https://img.shields.io/github/downloads/xebialabs-community/xld-conjur-plugin/total.svg
 
 ## Overview ##
 
