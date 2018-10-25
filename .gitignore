@@ -9,3 +9,6 @@ build
 bin
 supervisord.*
 xld-conjur-host-plugin.iml
+docker-compose.yml
+data_key
+start-conjur.sh
