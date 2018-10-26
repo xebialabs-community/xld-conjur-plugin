@@ -8,11 +8,10 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from net.conjur.api import Conjur
-from net.conjur.api import Credentials
 from net.conjur.api import Endpoints
-from java.lang import System
-from java.lang import Exception
+from net.conjur.api.clients import ResourceClient
+
+from java.net import URI
 
 """ Conjur client """
 class ConjurClient(object):
@@ -25,14 +24,14 @@ class ConjurClient(object):
     def __init__(self, url, account, username, password):
         print "Creating Conjur client for '%s', account '%s', user '%s'" % (url, account, username)
         
-        System.setProperty('CONJUR_APPLIANCE_URL', url)
-        System.setProperty('CONJUR_ACCOUNT', account)
-        System.setProperty('CONJUR_AUTHN_LOGIN', username)
-        System.setProperty('CONJUR_AUTHN_API_KEY', password)
+        authnUri = URI.create("%s/authn/%s/" % (url, account))
+        secretsUri = URI.create("%s/secrets/%s/variable" % (url, account))
 
-        self.conjur = Conjur()
+        endpoints = Endpoints(authnUri, secretsUri)
+
+        self.resourceClient = ResourceClient(username, password, endpoints)
 
 
     def retrieve_secret(self, path):
-        return self.conjur.variables().retrieveSecret(path)
+        return self.resourceClient.retrieveSecret(path)
 
