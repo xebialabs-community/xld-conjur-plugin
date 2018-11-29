@@ -1,0 +1,7 @@
+- !layer
+
+- !host xld-01
+
+- !grant
+  role: !layer
+  member: !host xld-01
