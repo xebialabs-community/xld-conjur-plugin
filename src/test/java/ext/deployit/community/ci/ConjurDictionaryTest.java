@@ -10,50 +10,30 @@
 
 package ext.deployit.community.ci;
 
-import static org.junit.Assert.assertEquals;
-
-import ext.deployit.community.plugin.conjur.ci.ConjurDictionary;
-import org.junit.Test;
-
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashMap;
+import org.junit.*;
+import static org.junit.Assert.*;
+import com.google.common.collect.Maps;
+import ext.deployit.community.ci.dictionary.*;
 
-import net.conjur.api.Conjur;
+
 
 public class ConjurDictionaryTest {
 
-    //@Test TODO: is it still interesting to test it like this ?
-    public void TestConjur() {
-        System.out.println("In TestConjur");
-        TestableConjurDictionary dict = new TestableConjurDictionary();
-        Map<String, String> origEntries = new HashMap<String, String>();
-        origEntries.put("key1", "$conjur:path1");
-        dict.setEntries(origEntries);
+    @Test
+    public void testSecretRetrieval() throws Exception {
 
-        Map<String, String> entries = dict.getEntries();
+        final Map<String, Object> map = Maps.newHashMap();
+        
+        final Map<String, Object> stringObjectMap = ScriptRunner.executeScript(map, "test/retrieve_data_test.py");
+        final Map<String, String> entries = (Map<String, String>) stringObjectMap.get("entries");
 
-        for (String key : entries.keySet()) {
-            System.out.println("Testing here, " + key);
-            if (key.equals("key1")) {
-                assertEquals("variable1", entries.get(key));
-            }
-        }
+        System.out.println("Test entries - "+entries);
+        assertTrue(entries.size() > 0);
+        assertTrue(entries.get("db/password").equals("secretPassword123"));
+        assertTrue(entries.get("db/username").equals("theDBUser"));
+        assertTrue(entries.get("db/tempPath").equals("/tmp"));
+
     }
-
-    class TestableConjurDictionary extends ConjurDictionary {
-
-
-        protected String getConjurValue(Conjur conjur, String key) {
-            if (key.equals("path1")) {
-                return "variable1";
-            } else if (key.equals("root/host/env/host-01/password")) {
-                return "variable2";
-            }
-            return "";
-        }
-    }
-
 }
 

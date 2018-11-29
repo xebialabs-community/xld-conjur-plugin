@@ -37,7 +37,7 @@ def targets():
 
 for t in targets():
     if t.conjurServer is None:
-        raise Exception("Vault server is not set for '{0}' CI".format(t.id))
+        raise Exception("Conjur server is not set for '{0}' CI".format(t.id))
 
     context.addStep(steps.jython(
         description="Update the '{0}' CI with values from the '{1}' conjur".format(t.id,t.conjurServer.name),
