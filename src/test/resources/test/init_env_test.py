@@ -1,5 +1,5 @@
 #
-# Copyright 2018 XEBIALABS
+# Copyright 2017 XebiaLabs
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 #
@@ -8,30 +8,45 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from net.conjur.api import Endpoints
-from net.conjur.api.clients import ResourceClient
-
-from java.net import URI
-
-""" Conjur client """
-class ConjurClient(object):
-
-    @staticmethod
-    def new_instance(container):
-        return ConjurClient(container.url, container.account, container.username, container.password)
 
 
-    def __init__(self, url, account, username, password):
-        print "Creating Conjur client for '%s', account '%s', user '%s'" % (url, account, username)
-        
-        authnUri = URI.create("%s/authn/%s/" % (url, account))
-        secretsUri = URI.create("%s/secrets/%s/variable" % (url, account))
+import mymodule
+import inspect
+import os
+import sys
+import subprocess
 
-        endpoints = Endpoints(authnUri, secretsUri)
+command1 = 'cd ./src/test/resources'
+process = subprocess.Popen(command1.split(), stdout=subprocess.PIPE)
+output, error = process.communicate()
+print output
 
-        self.resourceClient = ResourceClient(username, password, endpoints)
+command = 'ls -l'
+process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+output, error = process.communicate()
+print output
 
 
-    def retrieve_secret(self, path):
-        return self.resourceClient.retrieveSecret(path)
 
+
+print "LAD-In init_env_test"
+entries['lynn']='damato'
+
+
+print "start"
+print "end"
+
+import inspect
+import os
+import sys
+
+def get_script_dir(follow_symlinks=True):
+    if getattr(sys, 'frozen', False): # py2exe, PyInstaller, cx_Freeze
+        path = os.path.abspath(sys.executable)
+    else:
+        path = inspect.getabsfile(get_script_dir)
+    if follow_symlinks:
+        path = os.path.realpath(path)
+    return os.path.dirname(path)
+
+print(get_script_dir())

@@ -42,6 +42,7 @@ public class ScriptRunner {
         pythonContext.put(KEY_ENTRIES, new HashMap<String, String>());
         pythonContext.put(KEY_LOGGER, logger);
         pythonContext.put(KEY_SCRIPT_NAME, scriptName);
+        
         if (logger.isDebugEnabled()) {
             logger.debug("execute script " + scriptName + " with the context " + pythonContext);
         }
@@ -57,7 +58,7 @@ public class ScriptRunner {
             logger.error("Error on orchestrator script : scriptname  {} scriptclasspath {} for dictionary {} ", scriptName, scriptClasspath, ci);
             logger.error("Exception on script ", e);
             throw new DeployitException(e);
-        }
+        } 
     }
 
     protected static void loadLibraryScriptsAndEval(String scriptName, ScriptEngine scriptEngine, Bindings localBindings, String scriptClasspath) {
