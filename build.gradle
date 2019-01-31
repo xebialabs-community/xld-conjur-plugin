@@ -4,12 +4,14 @@ plugins {
   id "com.github.hierynomus.license" version "0.14.0"
   id "com.xebialabs.xldp" version "1.0.5"
   id "nebula.release" version "6.0.0"
+  id "com.github.hierynomus.jython" version "0.3.0"
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: "com.github.hierynomus.jython"
 
 version = '1.0.1'
 def apiVersion = '2017.4.0'
@@ -20,6 +22,16 @@ processResources {
     'project.version': project.version.toString(),
     'artifactId'     : artifactId
   ]
+}
+
+test {
+  // To run tests - Docker must be running and port 8080 must be available. 
+  //   The test will set up a temporary conjur testbed using docker and after testing is complete,
+  //   the test docker containers are removed. 
+  
+  // show standard out and standard error of the test JVM(s) on the console
+   testLogging.showStandardStreams = true
+
 }
 
 repositories {
@@ -44,38 +56,15 @@ dependencies {
   compile zipTree("$xlDeployHome/plugins/generic-plugin-8.1.0.xldp")
   compile zipTree("$xlDeployHome/plugins/base-plugin-8.1.0.xldp")
 
-  testCompile group: 'junit', name: 'junit', version: '4.+'
+  compile "junit:junit:4.11"
 
   distBundle group: 'org.apache.commons', name: 'commons-text', version: '1.3'
+
+  jython "PyGithub:PyGithub:v1.28:github"
+
+  runtime group: 'org.python', name: 'jython-standalone', version: '2.7.0'
 }
 
-if (!project.hasProperty('release.scope')) {
-  project.ext['release.scope'] = 'patch'
-}
-
-if (!project.hasProperty('release.useLastTag')) {
-  project.ext['release.useLastTag'] = true
-}
-
-if (!project.hasProperty('jythonInterpreter')) {
-  project.ext['jythonInterpreter'] = "jython"
-}
-
-sourceSets.main.resources.srcDirs = ["src/main/java",   "src/main/resources"]
-sourceSets.test.resources.srcDirs = ["src/test/jython", "src/test/resources"]
-
-task runTest(type: Exec, dependsOn: ['testClasses']) {
-    environment = ["itest_conf_file": "$projectDir/itest-conf.json", "PATH": System.getenv("PATH"), "HOME": System.getenv("HOME")]
-    commandLine jythonInterpreter, "-m", "unittest", "-v", System.getProperty("testName")
-    workingDir = "$projectDir/src/test/jython"
-}
-
-task itests(type: Exec, dependsOn: ['testClasses']) {
-    logger.info("{$sourceSets.test.runtimeClasspath.asPath}")
-    environment = ["itest_conf_file": "$projectDir/test/jython/itests/itest-conf.json", "PATH": System.getenv("PATH"), "HOME": System.getenv("HOME")]
-    commandLine jythonInterpreter, "-Dpython.path={$sourceSets.test.runtimeClasspath.asPath}:{$sourceSets.main.runtimeClasspath.asPath}", "-m", "unittest", "discover", "-s", "$projectDir/src/test/jython", "-p", "*_test.py", "-v"
-    workingDir = projectDir
-}
 
 license {
   header rootProject.file('License.md')
