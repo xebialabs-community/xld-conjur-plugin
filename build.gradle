@@ -13,7 +13,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: "com.github.hierynomus.jython"
 
-version = '1.0.0'
+version = '1.0.1'
 def apiVersion = '2017.4.0'
 def artifactId = "xld-conjur-plugin"
 
@@ -64,7 +64,6 @@ dependencies {
 
   runtime group: 'org.python', name: 'jython-standalone', version: '2.7.0'
 }
-
 
 
 license {

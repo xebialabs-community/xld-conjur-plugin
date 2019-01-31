@@ -1,0 +1,6 @@
+[{
+    "name" : "conjur_server",
+    "url" : "http://localhost:8088",
+    "proxyHost": "",
+    "enableSslVerification": false
+}]
