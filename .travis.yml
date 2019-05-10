@@ -2,10 +2,8 @@ sudo: required
 language: java
 install: true
 script: "./gradlew assemble"
-
 before_install:
- - chmod +x gradlew
-
+- chmod +x gradlew
 deploy:
   provider: releases
   api_key:
@@ -16,3 +14,6 @@ deploy:
     all_branches: true
     tags: true
     repo: xebialabs-community/xld-conjur-plugin
+notifications:
+  slack:
+    secure: eRKOiNLllMswq1ks16d9hNp+Ui+9WvWtkQ0fU0N62hUqM3nxi0/jE5M6gowLsOnQZSgGkzXfn6zWAhYLynD/Vp97nw8XMCdq0IfnlS3a6eLtU7xdXQgec43P2+8AQWRducqDhUR4KjZLaHFbsrymQ+xT+m7Tv3bjik3ddL7NPq6nIDjLwb2ibyyucMmcKqDNzKqKnaevDzj9Z3czHGoHe1ZDP/TDGZFOZ65JkFA1rEEDwvwADPKqQY1rGQHBecYP70Q6oKJnNY9TGYMUiF/7wWiJO0KTe6yrQ9ksIOL4IyPXcS4bA4i34fwpy+Gi9pPoeMt1LHtHdRIR67NTlCnYkOdz5PlQZQWxyEIlgUC7xjuGo/YSkj/dkwMQ7y5fQ+HT8mU5c7jgA+EKzD+1oGehQESbTMxtN3ybsg5N02ElPhEjn+cg9phEFMiGF2HwnNw9JrHUGGqjZFG+BU4dN+RSpNuLSjrUl2vouUZWUO5ojEKLBKzjViA33lrztXPXmqaKq/shYVxsoRKpXP0J0vePE7fqu/DQmoZip+aR7g5NXAKwRmJ/2n8MQG3exZJDNha3eB6amF8KF+Snzyy/rCrjgI4hJgs838M+88WO3Zw977fE654pU/1NXozdecHgi9Wc8xVCKUVUUaEPrABkwLLvRsgv1pt81k6g+useEM0sHQY=
